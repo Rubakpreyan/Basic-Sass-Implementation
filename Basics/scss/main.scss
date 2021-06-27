@@ -1,0 +1,81 @@
+//Importing the basic changes to the browser
+@import "./resets";
+
+//Importing the maped variables and color code
+@import "./variable";
+
+// creating a Function
+@function weights($weight-name) {
+  @return map-get($font-weights, $weight-name);
+}
+
+// Mixin which be repeated in code whenever needed
+
+@mixin flexCenter($direction) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1rem;
+  flex-direction: $direction;
+}
+
+@mixin theme($light-theme: true) {
+  @if $light-theme {
+    background: lighten($primary-color, 100%);
+    color: darken($text-color, 100%);
+  }
+}
+
+@mixin mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}
+body {
+  // background:var(--primary-color); Normal css
+  // Scss
+  background: $primary-color;
+  color: $text-color;
+}
+
+.main {
+  // Calling mixin function
+  @include flexCenter(row);
+
+  width: 80%;
+  margin: 0 auto;
+
+  // & represent the parent class name
+
+  // Adding #{&}_para will lead to interpolation
+  #{&}_para1 {
+    //Nested styling ( Applicable only for the <p> inside <main> )
+
+    /* Map
+    font-weight: map-get($font-weights, bold); */
+
+    //Function call
+    font-weight: weights(bold);
+
+    &:hover {
+      color: pink;
+    }
+  }
+
+  #{&}_para2 {
+    //Abstracting properties of para1
+    @extend .main_para1;
+    &:hover {
+      color: $accent-color;
+    }
+  }
+
+  // This will be activated once the window size becomes less than 800px
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.light {
+  @include theme($light-theme: false);
+}
